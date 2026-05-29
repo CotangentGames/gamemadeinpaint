@@ -35,11 +35,8 @@ pygame.mixer.init()
 pygame.font.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("game made in paint")
-try:
-    program_icon = pygame.image.load(resource_path("sprites/redGem.png"))
-    pygame.display.set_icon(program_icon)
-except Exception as e:
-    print(f"Warning: Could not load icon: {e}")
+program_icon = pygame.image.load(resource_path("sprites/redGem.png"))
+pygame.display.set_icon(program_icon)
 clock = pygame.time.Clock()
 font = pygame.font.Font(None, 48)
 small_font = pygame.font.Font(None, 32)
@@ -147,15 +144,11 @@ class Button:
         self.action_id = action_id
         self.image = None
         if image_path:
-            try:
-                full_path = resource_path(image_path)
-                raw_img = pygame.image.load(full_path).convert_alpha()
-                target_w = width - 10
-                target_h = height - 10
-                self.image = pygame.transform.scale(raw_img, (target_w, target_h))
-            except Exception as e:
-                print(f"Could not load button image at {image_path}: {e}")
-                self.image = None
+            full_path = resource_path(image_path)
+            raw_img = pygame.image.load(full_path).convert_alpha()
+            target_w = width - 10
+            target_h = height - 10
+            self.image = pygame.transform.scale(raw_img, (target_w, target_h))
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
         is_hovered = self.rect.collidepoint(mouse_pos)
@@ -198,55 +191,30 @@ LEVEL_CONFIG = {
     9: ("sprites/Far Away.png", 5000, LAYOUT_SQUARE, "Far Away")
 }
 DEFAULT_LEVEL_DATA = ("sprites/Pyramids Somewhere.png", 2000, LAYOUT_SQUARE, "Unknown")
-try:
-    select_sound = pygame.mixer.Sound(resource_path("sounds/click.wav"))
-    swap_sound = pygame.mixer.Sound(resource_path("sounds/slide.wav"))
-    match_sound = pygame.mixer.Sound(resource_path("sounds/match.wav"))
-    select_sound.set_volume(0.5)
-    swap_sound.set_volume(0.5)
-    match_sound.set_volume(0.5)
-except FileNotFoundError:
-    print("Warning: Sound files not found. Game will run without audio.")
-    class DummySound:
-        def play(self): pass
-        def set_volume(self, v): pass
-    select_sound = swap_sound = match_sound = DummySound()
-try:
-    playlist = [
-        "sounds/music1.mp3",
-        "sounds/music2.mp3",
-        "sounds/music3.mp3",
-    ]
-    chosen_song = random.choice(playlist)
-    print(f"Playing: {chosen_song}")
-    pygame.mixer.music.load(resource_path(chosen_song))
-    pygame.mixer.music.set_volume(.5)
-    pygame.mixer.music.play(-1)
-except FileNotFoundError:
-    print("Music file not found, playing in silence.")
-except IndexError:
-    print("Playlist is empty!")
-try:
-    menu_bg = pygame.image.load(resource_path("sprites/Far Away.png"))
-    menu_bg = pygame.transform.scale(menu_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
-except FileNotFoundError:
-    menu_bg = None
-try:
-    background_image = pygame.image.load(resource_path("sprites/Pyramids Somewhere.png"))
-    background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-except FileNotFoundError:
-    print("Background image not found. Using black color.")
-    background_image = None
+select_sound = pygame.mixer.Sound(resource_path("sounds/click.wav"))
+swap_sound = pygame.mixer.Sound(resource_path("sounds/slide.wav"))
+match_sound = pygame.mixer.Sound(resource_path("sounds/match.wav"))
+select_sound.set_volume(0.5)
+swap_sound.set_volume(0.5)
+match_sound.set_volume(0.5)
+playlist = [
+    "sounds/music1.mp3",
+    "sounds/music2.mp3",
+    "sounds/music3.mp3",
+]
+chosen_song = random.choice(playlist)
+print(f"Playing: {chosen_song}")
+pygame.mixer.music.load(resource_path(chosen_song))
+pygame.mixer.music.set_volume(.5)
+pygame.mixer.music.play(-1)
+menu_bg = pygame.image.load(resource_path("sprites/Far Away.png"))
+menu_bg = pygame.transform.scale(menu_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
+background_image = pygame.image.load(resource_path("sprites/Pyramids Somewhere.png"))
+background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 for filename in gem_files:
-    try:
-        img = pygame.image.load(resource_path(filename)).convert_alpha()
-        img = pygame.transform.scale(img, (CELL_SIZE - 10, CELL_SIZE - 10))
-        GEM_IMAGES.append(img)
-    except FileNotFoundError:
-        print(f"Error: Could not find {filename}")
-        fallback = pygame.Surface((CELL_SIZE - 10, CELL_SIZE - 10))
-        fallback.fill((255, 0, 255))
-        GEM_IMAGES.append(fallback)
+    img = pygame.image.load(resource_path(filename)).convert_alpha()
+    img = pygame.transform.scale(img, (CELL_SIZE - 10, CELL_SIZE - 10))
+    GEM_IMAGES.append(img)
 def main_menu():
     run_menu = True
     btn_play = Button("PLAY", 10, 200, 200, 60, (0, 128, 0), (0, 200, 0))
@@ -412,12 +380,8 @@ def run_game(level_input, DEFAULT_LEVEL_DATA):
         level_text = level_data[3] if len(level_data) > 3 else "Unknown Level"
         print(f"DEBUG: Loading Level {level_id} using image: {filename}")
     current_bg = None
-    try:
-        current_bg = pygame.image.load(resource_path(filename)).convert()
-        current_bg = pygame.transform.scale(current_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    except FileNotFoundError:
-        print(f"Could not find {filename}, defaulting to black.")
-        current_bg = None
+    current_bg = pygame.image.load(resource_path(filename)).convert()
+    current_bg = pygame.transform.scale(current_bg, (SCREEN_WIDTH, SCREEN_HEIGHT))
     grid = create_grid(level_layout)
     selected = None
     matched_cells = find_matches(grid)
